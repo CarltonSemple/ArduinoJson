@@ -5,7 +5,6 @@
 #pragma once
 
 #include "../Polyfills/ctype.hpp"
-#include "../Polyfills/limits.hpp"
 #include "../Polyfills/math.hpp"
 #include "../Polyfills/type_traits.hpp"
 #include "../Variant/VariantContent.hpp"
@@ -90,12 +89,13 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
 
   mantissa_t mantissa = 0;
   exponent_t exponent_offset = 0;
+  const mantissa_t max_uint = mantissa_t(-1);
 
   while (isdigit(*s)) {
     uint8_t digit = uint8_t(*s - '0');
-    if (mantissa > numeric_limits<mantissa_t>::max() / 10) break;
+    if (mantissa > max_uint / 10) break;
     mantissa *= 10;
-    if (mantissa > numeric_limits<mantissa_t>::max() - digit) break;
+    if (mantissa > max_uint - digit) break;
     mantissa += digit;
     s++;
   }
