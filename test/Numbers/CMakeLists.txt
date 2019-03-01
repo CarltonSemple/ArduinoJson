@@ -3,7 +3,6 @@
 # MIT License
 
 add_executable(NumbersTests 
-	isFloat.cpp
 	parseFloat.cpp
 	parseInteger.cpp
 	parseNumber.cpp
