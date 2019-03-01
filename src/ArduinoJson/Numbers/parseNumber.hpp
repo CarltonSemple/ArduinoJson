@@ -79,14 +79,28 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
   exponent_t exponent_offset = 0;
 
   while (isdigit(*s)) {
-    if (mantissa < traits::mantissa_max / 10)
-      mantissa = mantissa * 10 + (*s - '0');
-    else
-      exponent_offset++;
+    mantissa_t newMantissa = mantissa * 10 + (*s - '0');
+    if (newMantissa < mantissa) {
+      // overflow -> switch to float
+      break;
+    }
+    mantissa = newMantissa;
     s++;
   }
 
   if (*s == '\0') return return_type(TUInt(mantissa), is_negative);
+
+  // avoid mantissa overflow
+  while (mantissa > traits::mantissa_max) {
+    mantissa /= 10;
+    exponent_offset++;
+  }
+
+  // remaing digits can't fit in the mantissa
+  while (isdigit(*s)) {
+    exponent_offset++;
+    s++;
+  }
 
   if (*s == '.') {
     s++;

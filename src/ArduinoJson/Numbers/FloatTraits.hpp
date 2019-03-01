@@ -20,7 +20,7 @@ struct FloatTraits<T, 8 /*64bits*/> {
   typedef uint64_t mantissa_type;
   static const short mantissa_bits = 52;
   static const mantissa_type mantissa_max =
-      (static_cast<mantissa_type>(1) << mantissa_bits) - 1;
+      (mantissa_type(1) << mantissa_bits) - 1;
 
   typedef int16_t exponent_type;
   static const exponent_type exponent_max = 308;
@@ -108,7 +108,7 @@ struct FloatTraits<T, 4 /*32bits*/> {
   typedef int32_t mantissa_type;
   static const short mantissa_bits = 23;
   static const mantissa_type mantissa_max =
-      (static_cast<mantissa_type>(1) << mantissa_bits) - 1;
+      (mantissa_type(1) << mantissa_bits) - 1;
 
   typedef int8_t exponent_type;
   static const exponent_type exponent_max = 38;

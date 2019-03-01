@@ -255,10 +255,12 @@ TEST_CASE("parseNumber<uint16_t>()") {
   checkInteger<uint16_t>("false", 0);
 }
 
-/*TEST_CASE("Test uint32_t overflow") {
-  REQUIRE((parseNumber<float, uint32_t>("4294967295").type() ==
-           VALUE_IS_POSITIVE_INTEGER));
-  REQUIRE(
-      (parseNumber<float, uint32_t>("4294967296").type() == VALUE_IS_FLOAT));
+TEST_CASE("Test uint32_t overflow") {
+  ParsedNumber<float, uint32_t> first =
+      parseNumber<float, uint32_t>("4294967295");
+  ParsedNumber<float, uint32_t> second =
+      parseNumber<float, uint32_t>("4294967296");
+
+  REQUIRE(first.type() == uint8_t(VALUE_IS_POSITIVE_INTEGER));
+  REQUIRE(second.type() == uint8_t(VALUE_IS_FLOAT));
 }
-*/
