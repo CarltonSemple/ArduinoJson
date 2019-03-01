@@ -186,9 +186,7 @@ TEST_CASE("parseNumber<double>()") {
 template <typename T>
 void checkInteger(const char* input, T expected) {
   CAPTURE(input);
-  long intValue = parseNumber<double, uint32_t>(input).asInteger();
-  CAPTURE(intValue);
-  T actual = static_cast<T>(intValue);
+  T actual = parseNumber<double, uint32_t>(input).template as<T>();
   REQUIRE(expected == actual);
 }
 
@@ -236,7 +234,7 @@ TEST_CASE("parseNumber<uint8_t>()") {
   checkInteger<uint8_t>("+255", 255);
   checkInteger<uint8_t>("3.14", 3);
   checkInteger<uint8_t>("x42", 0);
-  checkInteger<uint8_t>("-1", 255);
+  checkInteger<uint8_t>("-1", 0);
   checkInteger<uint8_t>("256", 0);
   checkInteger<uint8_t>("true", 1);
   checkInteger<uint8_t>("false", 0);
@@ -249,7 +247,7 @@ TEST_CASE("parseNumber<uint16_t>()") {
   checkInteger<uint16_t>("3.14", 3);
   // checkInteger<uint16_t>(" 42", 0);
   checkInteger<uint16_t>("x42", 0);
-  checkInteger<uint16_t>("-1", 65535);
+  checkInteger<uint16_t>("-1", 0);
   checkInteger<uint16_t>("65536", 0);
   checkInteger<uint16_t>("true", 1);
   checkInteger<uint16_t>("false", 0);

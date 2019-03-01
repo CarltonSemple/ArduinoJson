@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../Polyfills/ctype.hpp"
+#include "../Polyfills/limits.hpp"
 #include "../Polyfills/math.hpp"
 #include "../Polyfills/type_traits.hpp"
 #include "../Variant/VariantContent.hpp"
@@ -19,18 +20,30 @@ struct ParsedNumber {
   ParsedNumber(TUInt value, bool is_negative)
       : uintValue(value),
         floatValue(TFloat(value)),
-        _type(is_negative ? VALUE_IS_NEGATIVE_INTEGER
-                          : VALUE_IS_POSITIVE_INTEGER) {}
+        _type(uint8_t(is_negative ? VALUE_IS_NEGATIVE_INTEGER
+                                  : VALUE_IS_POSITIVE_INTEGER)) {}
   ParsedNumber(TFloat value) : floatValue(value), _type(VALUE_IS_FLOAT) {}
 
-  Integer asInteger() const {
+  template <typename T>
+  typename enable_if<is_signed<T>::value, T>::type as() const {
     switch (_type) {
       case VALUE_IS_NEGATIVE_INTEGER:
-        return Integer(-uintValue);
+        return T(~uintValue + 1);
       case VALUE_IS_POSITIVE_INTEGER:
-        return Integer(uintValue);
+        return T(uintValue);
       case VALUE_IS_FLOAT:
-        return Integer(floatValue);
+        return T(floatValue);
+    }
+    return 0;
+  }
+
+  template <typename T>
+  typename enable_if<is_unsigned<T>::value, T>::type as() const {
+    switch (_type) {
+      case VALUE_IS_POSITIVE_INTEGER:
+        return T(uintValue);
+      case VALUE_IS_FLOAT:
+        return T(floatValue);
     }
     return 0;
   }
@@ -79,12 +92,11 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
   exponent_t exponent_offset = 0;
 
   while (isdigit(*s)) {
-    mantissa_t newMantissa = mantissa * 10 + (*s - '0');
-    if (newMantissa < mantissa) {
-      // overflow -> switch to float
-      break;
-    }
-    mantissa = newMantissa;
+    uint8_t digit = uint8_t(*s - '0');
+    if (mantissa > numeric_limits<mantissa_t>::max() / 10) break;
+    mantissa *= 10;
+    if (mantissa > numeric_limits<mantissa_t>::max() - digit) break;
+    mantissa += digit;
     s++;
   }
 
