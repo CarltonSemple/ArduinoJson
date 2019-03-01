@@ -225,12 +225,20 @@ class VariantData {
   template <typename T>
   void setSignedInteger(T value) {
     if (value >= 0) {
-      setType(VALUE_IS_POSITIVE_INTEGER);
-      _content.asInteger = static_cast<UInt>(value);
+      setPositiveInteger(static_cast<UInt>(value));
     } else {
-      setType(VALUE_IS_NEGATIVE_INTEGER);
-      _content.asInteger = ~static_cast<UInt>(value) + 1;
+      setNegativeInteger(~static_cast<UInt>(value) + 1);
     }
+  }
+
+  void setPositiveInteger(UInt value) {
+    setType(VALUE_IS_POSITIVE_INTEGER);
+    _content.asInteger = value;
+  }
+
+  void setNegativeInteger(UInt value) {
+    setType(VALUE_IS_NEGATIVE_INTEGER);
+    _content.asInteger = value;
   }
 
   void setLinkedString(const char *value) {

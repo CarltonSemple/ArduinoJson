@@ -4,33 +4,58 @@
 
 #pragma once
 
-#include "../Numbers/FloatTraits.hpp"
 #include "../Polyfills/ctype.hpp"
 #include "../Polyfills/math.hpp"
+#include "../Variant/VariantContent.hpp"
+#include "FloatTraits.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {
 
-template <typename TFloat>
+template <typename TFloat, typename TUInt>
 struct ParsedNumber {
-  ParsedNumber(long value) : intValue(value), floatValue(TFloat(value)) {}
-  ParsedNumber(TFloat value) : intValue(long(value)), floatValue(value) {}
+  ParsedNumber() : _type(VALUE_IS_NULL) {}
 
-  long intValue;
+  ParsedNumber(TUInt value, bool is_negative)
+      : uintValue(value),
+        floatValue(TFloat(value)),
+        _type(is_negative ? VALUE_IS_NEGATIVE_INTEGER
+                          : VALUE_IS_POSITIVE_INTEGER) {}
+  ParsedNumber(TFloat value) : floatValue(value), _type(VALUE_IS_FLOAT) {}
+
+  Integer asInteger() const {
+    switch (_type) {
+      case VALUE_IS_NEGATIVE_INTEGER:
+        return Integer(-uintValue);
+      case VALUE_IS_POSITIVE_INTEGER:
+        return Integer(uintValue);
+      case VALUE_IS_FLOAT:
+        return Integer(floatValue);
+    }
+    return 0;
+  }
+
+  uint8_t type() const {
+    return _type;
+  }
+
+  TUInt uintValue;
   TFloat floatValue;
+  uint8_t _type;
 };
 
-template <typename TFloat>
-inline ParsedNumber<TFloat> parseNumber(const char* s) {
+template <typename TFloat, typename TUInt>
+inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
   typedef FloatTraits<TFloat> traits;
   typedef typename traits::mantissa_type mantissa_t;
   typedef typename traits::exponent_type exponent_t;
+  typedef ParsedNumber<TFloat, TUInt> return_type;
 
-  if (!s) return long(0);  // NULL
+  if (!s) return return_type();
 
-  bool negative_result = false;
+  bool is_negative = false;
   switch (*s) {
     case '-':
-      negative_result = true;
+      is_negative = true;
       s++;
       break;
     case '+':
@@ -41,7 +66,8 @@ inline ParsedNumber<TFloat> parseNumber(const char* s) {
   if (*s == 't') return long(1);  // true
   if (*s == 'n' || *s == 'N') return traits::nan();
   if (*s == 'i' || *s == 'I')
-    return negative_result ? -traits::inf() : traits::inf();
+    return is_negative ? -traits::inf() : traits::inf();
+  if (!isdigit(*s)) return return_type();
 
   mantissa_t mantissa = 0;
   exponent_t exponent_offset = 0;
@@ -54,7 +80,7 @@ inline ParsedNumber<TFloat> parseNumber(const char* s) {
     s++;
   }
 
-  if (*s == '\0') return long(mantissa) * (negative_result ? -1 : 1);
+  if (*s == '\0') return return_type(TUInt(mantissa), is_negative);
 
   if (*s == '.') {
     s++;
@@ -82,9 +108,9 @@ inline ParsedNumber<TFloat> parseNumber(const char* s) {
       exponent = exponent * 10 + (*s - '0');
       if (exponent + exponent_offset > traits::exponent_max) {
         if (negative_exponent)
-          return negative_result ? -0.0f : 0.0f;
+          return is_negative ? -0.0f : 0.0f;
         else
-          return negative_result ? -traits::inf() : traits::inf();
+          return is_negative ? -traits::inf() : traits::inf();
       }
       s++;
     }
@@ -94,6 +120,6 @@ inline ParsedNumber<TFloat> parseNumber(const char* s) {
 
   TFloat result = traits::make_float(static_cast<TFloat>(mantissa), exponent);
 
-  return negative_result ? -result : result;
+  return is_negative ? -result : result;
 }
 }  // namespace ARDUINOJSON_NAMESPACE

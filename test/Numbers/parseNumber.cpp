@@ -10,20 +10,20 @@ using namespace ARDUINOJSON_NAMESPACE;
 template <typename T>
 void checkFloat(const char* input, T expected) {
   CAPTURE(input);
-  REQUIRE(parseNumber<T>(input).floatValue == Approx(expected));
+  REQUIRE((parseNumber<T, uint64_t>(input).floatValue == Approx(expected)));
 }
 
 template <typename T>
 void checkNaN(const char* input) {
   CAPTURE(input);
-  T result = parseNumber<T>(input).floatValue;
+  T result = parseNumber<T, uint64_t>(input).floatValue;
   REQUIRE(result != result);
 }
 
 template <typename T>
 void checkInf(const char* input, bool negative) {
   CAPTURE(input);
-  T x = parseNumber<T>(input).floatValue;
+  T x = parseNumber<T, uint64_t>(input).floatValue;
   if (negative)
     REQUIRE(x < 0);
   else
@@ -185,7 +185,7 @@ TEST_CASE("parseNumber<double>()") {
 template <typename T>
 void checkInteger(const char* input, T expected) {
   CAPTURE(input);
-  long intValue = parseNumber<double>(input).intValue;
+  long intValue = parseNumber<double, uint32_t>(input).asInteger();
   CAPTURE(intValue);
   T actual = static_cast<T>(intValue);
   REQUIRE(expected == actual);

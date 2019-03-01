@@ -17,7 +17,7 @@ struct FloatTraits {};
 
 template <typename T>
 struct FloatTraits<T, 8 /*64bits*/> {
-  typedef int64_t mantissa_type;
+  typedef uint64_t mantissa_type;
   static const short mantissa_bits = 52;
   static const mantissa_type mantissa_max =
       (static_cast<mantissa_type>(1) << mantissa_bits) - 1;
