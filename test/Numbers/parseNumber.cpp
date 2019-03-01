@@ -10,7 +10,8 @@ using namespace ARDUINOJSON_NAMESPACE;
 template <typename T>
 void checkFloat(const char* input, T expected) {
   CAPTURE(input);
-  REQUIRE((parseNumber<T, uint64_t>(input).floatValue == Approx(expected)));
+  T floatValue = parseNumber<T, uint64_t>(input).floatValue;
+  REQUIRE(floatValue == Approx(expected));
 }
 
 template <typename T>
@@ -253,3 +254,11 @@ TEST_CASE("parseNumber<uint16_t>()") {
   checkInteger<uint16_t>("true", 1);
   checkInteger<uint16_t>("false", 0);
 }
+
+/*TEST_CASE("Test uint32_t overflow") {
+  REQUIRE((parseNumber<float, uint32_t>("4294967295").type() ==
+           VALUE_IS_POSITIVE_INTEGER));
+  REQUIRE(
+      (parseNumber<float, uint32_t>("4294967296").type() == VALUE_IS_FLOAT));
+}
+*/

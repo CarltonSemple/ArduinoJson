@@ -6,6 +6,7 @@
 
 #include "../Polyfills/ctype.hpp"
 #include "../Polyfills/math.hpp"
+#include "../Polyfills/type_traits.hpp"
 #include "../Variant/VariantContent.hpp"
 #include "FloatTraits.hpp"
 
@@ -13,7 +14,7 @@ namespace ARDUINOJSON_NAMESPACE {
 
 template <typename TFloat, typename TUInt>
 struct ParsedNumber {
-  ParsedNumber() : _type(VALUE_IS_NULL) {}
+  ParsedNumber() : uintValue(0), floatValue(0), _type(VALUE_IS_NULL) {}
 
   ParsedNumber(TUInt value, bool is_negative)
       : uintValue(value),
@@ -43,14 +44,20 @@ struct ParsedNumber {
   uint8_t _type;
 };
 
+template <typename A, typename B>
+struct choose_largest : conditional<(sizeof(A) > sizeof(B)), A, B> {};
+
 template <typename TFloat, typename TUInt>
 inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
   typedef FloatTraits<TFloat> traits;
-  typedef typename traits::mantissa_type mantissa_t;
+  typedef typename choose_largest<typename traits::mantissa_type, TUInt>::type
+      mantissa_t;
   typedef typename traits::exponent_type exponent_t;
   typedef ParsedNumber<TFloat, TUInt> return_type;
 
   if (!s) return return_type();
+  if (*s == 't') return long(1);  // true
+  if (*s == 'f') return long(0);  // false
 
   bool is_negative = false;
   switch (*s) {
@@ -63,11 +70,10 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
       break;
   }
 
-  if (*s == 't') return long(1);  // true
   if (*s == 'n' || *s == 'N') return traits::nan();
   if (*s == 'i' || *s == 'I')
     return is_negative ? -traits::inf() : traits::inf();
-  if (!isdigit(*s)) return return_type();
+  if (!isdigit(*s) && *s != '.') return return_type();
 
   mantissa_t mantissa = 0;
   exponent_t exponent_offset = 0;
