@@ -7,6 +7,7 @@ add_executable(NumbersTests
 	isInteger.cpp
 	parseFloat.cpp
 	parseInteger.cpp
+	parseNumber.cpp
 )
 
 target_link_libraries(NumbersTests catch)
