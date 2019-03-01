@@ -4,7 +4,6 @@
 
 add_executable(NumbersTests 
 	isFloat.cpp
-	isInteger.cpp
 	parseFloat.cpp
 	parseInteger.cpp
 	parseNumber.cpp
