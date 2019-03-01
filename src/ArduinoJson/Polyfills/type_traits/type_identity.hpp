@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include "parseNumber.hpp"
+#include "integral_constant.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {
+
 template <typename T>
-T parseInteger(const char *s) {
-  typedef typename make_unsigned<T>::type TUInt;
-  return parseNumber<Float, TUInt>(s).template as<T>();
-}
+struct type_identity {
+  typedef T type;
+};
 }  // namespace ARDUINOJSON_NAMESPACE

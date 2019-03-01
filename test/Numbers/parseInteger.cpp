@@ -59,7 +59,7 @@ TEST_CASE("parseInteger<uint8_t>()") {
   check<uint8_t>("+255", 255);
   check<uint8_t>("3.14", 3);
   check<uint8_t>("x42", 0);
-  check<uint8_t>("-1", 255);
+  check<uint8_t>("-1", 0);
   check<uint8_t>("256", 0);
   check<uint8_t>("true", 1);
   check<uint8_t>("false", 0);
@@ -72,7 +72,7 @@ TEST_CASE("parseInteger<uint16_t>()") {
   check<uint16_t>("3.14", 3);
   // check<uint16_t>(" 42", 0);
   check<uint16_t>("x42", 0);
-  check<uint16_t>("-1", 65535);
+  check<uint16_t>("-1", 0);
   check<uint16_t>("65536", 0);
   check<uint16_t>("true", 1);
   check<uint16_t>("false", 0);
