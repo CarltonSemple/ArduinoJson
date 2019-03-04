@@ -10,45 +10,61 @@
 
 namespace ARDUINOJSON_NAMESPACE {
 
-template <typename T>
-typename enable_if<sizeof(T) <= sizeof(UInt), bool>::type
-canStorePositiveInteger(UInt value) {
-  return value <= T(numeric_limits<T>::max_value);
+template <typename TOut, typename TIn>
+typename enable_if<is_integral<TOut>::value && sizeof(TOut) <= sizeof(TIn),
+                   bool>::type
+canStorePositiveInteger(TIn value) {
+  return value <= TOut(numeric_limits<TOut>::max_value);
 }
 
-template <typename T>
-typename enable_if<sizeof(UInt) < sizeof(T), bool>::type
-canStorePositiveInteger(UInt) {
+template <typename TOut, typename TIn>
+typename enable_if<is_integral<TOut>::value && sizeof(TIn) < sizeof(TOut),
+                   bool>::type
+canStorePositiveInteger(TIn) {
   return true;
 }
 
-template <typename T>
-typename enable_if<is_signed<T>::value, bool>::type canStoreNegativeInteger(
-    UInt value) {
-  return value <= UInt(-numeric_limits<T>::min_value);
+template <typename TOut, typename TIn>
+typename enable_if<is_floating_point<TOut>::value, bool>::type
+canStorePositiveInteger(TIn) {
+  return true;
 }
 
-template <typename T>
-typename enable_if<is_unsigned<T>::value, bool>::type canStoreNegativeInteger(
-    UInt) {
+template <typename TOut, typename TIn>
+typename enable_if<is_floating_point<TOut>::value, bool>::type
+canStoreNegativeInteger(TIn) {
+  return true;
+}
+
+template <typename TOut, typename TIn>
+typename enable_if<is_integral<TOut>::value && is_signed<TOut>::value,
+                   bool>::type
+canStoreNegativeInteger(TIn value) {
+  return value <= TIn(-numeric_limits<TOut>::min_value);
+}
+
+template <typename TOut, typename TIn>
+typename enable_if<is_integral<TOut>::value && is_unsigned<TOut>::value,
+                   bool>::type
+canStoreNegativeInteger(TIn) {
   return false;
 }
 
-template <typename T>
-T convertPositiveInteger(UInt value) {
-  return canStorePositiveInteger<T>(value) ? T(value) : 0;
+template <typename TOut, typename TIn>
+TOut convertPositiveInteger(TIn value) {
+  return canStorePositiveInteger<TOut>(value) ? TOut(value) : 0;
 }
 
-template <typename T>
-T convertNegativeInteger(UInt value) {
-  return canStoreNegativeInteger<T>(value) ? T(~value + 1) : 0;
+template <typename TOut, typename TIn>
+TOut convertNegativeInteger(TIn value) {
+  return canStoreNegativeInteger<TOut>(value) ? TOut(~value + 1) : 0;
 }
 
-template <typename T>
-T convertFloat(Float value) {
-  return value >= numeric_limits<T>::min_value &&
-                 value <= numeric_limits<T>::max_value
-             ? T(value)
+template <typename TOut>
+TOut convertFloat(Float value) {
+  return value >= numeric_limits<TOut>::min_value &&
+                 value <= numeric_limits<TOut>::max_value
+             ? TOut(value)
              : 0;
 }
 }  // namespace ARDUINOJSON_NAMESPACE

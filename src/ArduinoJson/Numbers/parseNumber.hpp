@@ -23,30 +23,6 @@ struct ParsedNumber {
                                   : VALUE_IS_POSITIVE_INTEGER)) {}
   ParsedNumber(TFloat value) : floatValue(value), _type(VALUE_IS_FLOAT) {}
 
-  template <typename T>
-  typename enable_if<is_signed<T>::value, T>::type as() const {
-    switch (_type) {
-      case VALUE_IS_NEGATIVE_INTEGER:
-        return T(~uintValue + 1);
-      case VALUE_IS_POSITIVE_INTEGER:
-        return T(uintValue);
-      case VALUE_IS_FLOAT:
-        return T(floatValue);
-    }
-    return 0;
-  }
-
-  template <typename T>
-  typename enable_if<is_unsigned<T>::value, T>::type as() const {
-    switch (_type) {
-      case VALUE_IS_POSITIVE_INTEGER:
-        return T(uintValue);
-      case VALUE_IS_FLOAT:
-        return T(floatValue);
-    }
-    return 0;
-  }
-
   uint8_t type() const {
     return _type;
   }
