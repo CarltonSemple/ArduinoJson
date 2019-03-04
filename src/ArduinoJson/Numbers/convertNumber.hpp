@@ -11,27 +11,37 @@
 namespace ARDUINOJSON_NAMESPACE {
 
 template <typename T>
-typename enable_if<sizeof(T) <= sizeof(UInt), T>::type convertPositiveInteger(
-    UInt value) {
-  return value <= T(numeric_limits<T>::max_value) ? T(value) : 0;
+typename enable_if<sizeof(T) <= sizeof(UInt), bool>::type
+canStorePositiveInteger(UInt value) {
+  return value <= T(numeric_limits<T>::max_value);
 }
 
 template <typename T>
-typename enable_if<sizeof(UInt) < sizeof(T), T>::type convertPositiveInteger(
-    UInt value) {
-  return T(value);
+typename enable_if<sizeof(UInt) < sizeof(T), bool>::type
+canStorePositiveInteger(UInt) {
+  return true;
 }
 
 template <typename T>
-typename enable_if<is_signed<T>::value, T>::type convertNegativeInteger(
+typename enable_if<is_signed<T>::value, bool>::type canStoreNegativeInteger(
     UInt value) {
-  return value <= UInt(-numeric_limits<T>::min_value) ? T(~value + 1) : 0;
+  return value <= UInt(-numeric_limits<T>::min_value);
 }
 
 template <typename T>
-typename enable_if<is_unsigned<T>::value, T>::type convertNegativeInteger(
+typename enable_if<is_unsigned<T>::value, bool>::type canStoreNegativeInteger(
     UInt) {
-  return 0;
+  return false;
+}
+
+template <typename T>
+T convertPositiveInteger(UInt value) {
+  return canStorePositiveInteger<T>(value) ? T(value) : 0;
+}
+
+template <typename T>
+T convertNegativeInteger(UInt value) {
+  return canStoreNegativeInteger<T>(value) ? T(~value + 1) : 0;
 }
 
 template <typename T>
