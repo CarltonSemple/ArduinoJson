@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "../Polyfills/type_traits.hpp"
 #include "parseNumber.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {

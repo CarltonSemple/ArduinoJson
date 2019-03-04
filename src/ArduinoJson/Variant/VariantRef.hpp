@@ -9,8 +9,6 @@
 
 #include "../Memory/MemoryPool.hpp"
 #include "../Misc/Visitable.hpp"
-#include "../Numbers/parseFloat.hpp"
-#include "../Numbers/parseInteger.hpp"
 #include "../Operators/VariantOperators.hpp"
 #include "../Polyfills/type_traits.hpp"
 #include "VariantAs.hpp"

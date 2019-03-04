@@ -11,6 +11,9 @@ template <typename T>
 struct make_unsigned;
 
 template <>
+struct make_unsigned<char> : type_identity<unsigned char> {};
+
+template <>
 struct make_unsigned<signed char> : type_identity<unsigned char> {};
 template <>
 struct make_unsigned<unsigned char> : type_identity<unsigned char> {};
