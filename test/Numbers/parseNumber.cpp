@@ -253,6 +253,12 @@ TEST_CASE("parseNumber<uint16_t>()") {
   checkInteger<uint16_t>("false", 0);
 }
 
+TEST_CASE("parseNumber<uint32_t>()") {
+  checkInteger<uint32_t>("0", 0);
+  checkInteger<uint32_t>("4294967295", 4294967295U);
+  checkInteger<uint32_t>("4294967296", 0);
+}
+
 TEST_CASE("Test uint32_t overflow") {
   ParsedNumber<float, uint32_t> first =
       parseNumber<float, uint32_t>("4294967295");

@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../Misc/SerializedValue.hpp"
+#include "../Numbers/convertNumber.hpp"
 #include "../Polyfills/gsl/not_null.hpp"
 #include "VariantContent.hpp"
 
@@ -147,9 +148,18 @@ class VariantData {
     return (_flags & COLLECTION_MASK) != 0;
   }
 
+  template <typename T>
   bool isInteger() const {
-    return type() == VALUE_IS_POSITIVE_INTEGER ||
-           type() == VALUE_IS_NEGATIVE_INTEGER;
+    switch (type()) {
+      case VALUE_IS_POSITIVE_INTEGER:
+        return canStorePositiveInteger<T>(_content.asInteger);
+
+      case VALUE_IS_NEGATIVE_INTEGER:
+        return canStoreNegativeInteger<T>(_content.asInteger);
+
+      default:
+        return false;
+    }
   }
 
   bool isFloat() const {

@@ -43,7 +43,7 @@ class VariantRefBase {
   template <typename T>
   FORCE_INLINE typename enable_if<is_integral<T>::value, bool>::type is()
       const {
-    return variantIsInteger(_data);
+    return variantIsInteger<T>(_data);
   }
   //
   // bool is<double>() const;

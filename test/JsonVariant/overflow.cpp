@@ -6,58 +6,67 @@
 #include <catch.hpp>
 
 template <typename TOut, typename TIn>
-TOut setAndGet(TIn value) {
+void shouldBeOk(TIn value) {
   StaticJsonDocument<1> doc;
   JsonVariant var = doc.to<JsonVariant>();
   var.set(value);
-  return var.as<TOut>();
+  REQUIRE(var.as<TOut>() == TOut(value));
+}
+
+template <typename TOut, typename TIn>
+void shouldOverflow(TIn value) {
+  StaticJsonDocument<1> doc;
+  JsonVariant var = doc.to<JsonVariant>();
+  var.set(value);
+  REQUIRE(var.as<TOut>() == 0);
+  REQUIRE(var.is<TOut>() == false);
 }
 
 TEST_CASE("Handle integer overflow in stored integer") {
   SECTION("int8_t") {
     // ok
-    CHECK(setAndGet<int8_t>(-128) == -128);
-    CHECK(setAndGet<int8_t>(42.0) == 42);
-    CHECK(setAndGet<int8_t>(127) == 127);
+    shouldBeOk<int8_t>(-128);
+    shouldBeOk<int8_t>(42.0);
+    shouldBeOk<int8_t>(127);
 
     // too low
-    CHECK(setAndGet<int8_t>(-128.1) == 0);
-    CHECK(setAndGet<int8_t>(-129) == 0);
+    shouldOverflow<int8_t>(-128.1);
+    shouldOverflow<int8_t>(-129);
 
     // too high
-    CHECK(setAndGet<int8_t>(128) == 0);
-    CHECK(setAndGet<int8_t>(127.1) == 0);
+    shouldOverflow<int8_t>(128);
+    shouldOverflow<int8_t>(127.1);
   }
 
   SECTION("int16_t") {
     // ok
-    CHECK(setAndGet<int16_t>(-32768) == -32768);
-    CHECK(setAndGet<int16_t>(-32767.9) == -32767);
-    CHECK(setAndGet<int16_t>(32766.9) == 32766);
-    CHECK(setAndGet<int16_t>(32767) == 32767);
+    shouldBeOk<int16_t>(-32768);
+    shouldBeOk<int16_t>(-32767.9);
+    shouldBeOk<int16_t>(32766.9);
+    shouldBeOk<int16_t>(32767);
 
     // too low
-    CHECK(setAndGet<int16_t>(-32768.1) == 0);
-    CHECK(setAndGet<int16_t>(-32769) == 0);
+    shouldOverflow<int16_t>(-32768.1);
+    shouldOverflow<int16_t>(-32769);
 
     // too high
-    CHECK(setAndGet<int16_t>(32767.1) == 0);
-    CHECK(setAndGet<int16_t>(32768) == 0);
+    shouldOverflow<int16_t>(32767.1);
+    shouldOverflow<int16_t>(32768);
   }
 
   SECTION("uint8_t") {
     // ok
-    CHECK(setAndGet<uint8_t>(1) == 1);
-    CHECK(setAndGet<uint8_t>(42.0) == 42);
-    CHECK(setAndGet<uint8_t>(255) == 255);
+    shouldBeOk<uint8_t>(1);
+    shouldBeOk<uint8_t>(42.0);
+    shouldBeOk<uint8_t>(255);
 
     // too low
-    CHECK(setAndGet<uint8_t>(-1) == 0);
-    CHECK(setAndGet<uint8_t>(-0.1) == 0);
+    shouldOverflow<uint8_t>(-1);
+    shouldOverflow<uint8_t>(-0.1);
 
     // to high
-    CHECK(setAndGet<uint8_t>(255.1) == 0);
-    CHECK(setAndGet<uint8_t>(256) == 0);
-    CHECK(setAndGet<uint8_t>(257) == 0);
+    shouldOverflow<uint8_t>(255.1);
+    shouldOverflow<uint8_t>(256);
+    shouldOverflow<uint8_t>(257);
   }
 }
