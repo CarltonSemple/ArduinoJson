@@ -59,7 +59,7 @@ template <typename TOut, typename TIn>
 typename enable_if<is_integral<TOut>::value && is_signed<TOut>::value &&
                        sizeof(TIn) < sizeof(TOut),
                    bool>::type
-canStoreNegativeInteger(TIn value) {
+canStoreNegativeInteger(TIn) {
   return true;
 }
 
