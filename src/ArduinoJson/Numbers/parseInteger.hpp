@@ -11,19 +11,9 @@
 namespace ARDUINOJSON_NAMESPACE {
 template <typename T>
 T parseInteger(const char *s) {
-  typedef typename make_unsigned<T>::type TUInt;
-
-  ParsedNumber<Float, TUInt> num = parseNumber<Float, TUInt>(s);
-
-  switch (num.type()) {
-    case VALUE_IS_NEGATIVE_INTEGER:
-      return convertNegativeInteger<T>(num.uintValue);
-
-    case VALUE_IS_POSITIVE_INTEGER:
-      return convertPositiveInteger<T>(num.uintValue);
-
-    default:
-      return 0;
-  }
+  // try to reuse the same parameters as JsonDeserializer
+  typedef typename choose_largest<UInt, typename make_unsigned<T>::type>::type
+      TUInt;
+  return parseNumber<Float, TUInt>(s).template as<T>();
 }
 }  // namespace ARDUINOJSON_NAMESPACE

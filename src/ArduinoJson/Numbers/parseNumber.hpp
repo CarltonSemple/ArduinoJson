@@ -9,6 +9,7 @@
 #include "../Polyfills/type_traits.hpp"
 #include "../Variant/VariantContent.hpp"
 #include "FloatTraits.hpp"
+#include "convertNumber.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {
 
@@ -22,6 +23,20 @@ struct ParsedNumber {
         _type(uint8_t(is_negative ? VALUE_IS_NEGATIVE_INTEGER
                                   : VALUE_IS_POSITIVE_INTEGER)) {}
   ParsedNumber(TFloat value) : floatValue(value), _type(VALUE_IS_FLOAT) {}
+
+  template <typename T>
+  T as() const {
+    switch (_type) {
+      case VALUE_IS_NEGATIVE_INTEGER:
+        return convertNegativeInteger<T>(uintValue);
+      case VALUE_IS_POSITIVE_INTEGER:
+        return convertPositiveInteger<T>(uintValue);
+      case VALUE_IS_FLOAT:
+        return convertFloat<T>(floatValue);
+      default:
+        return 0;
+    }
+  }
 
   uint8_t type() const {
     return _type;

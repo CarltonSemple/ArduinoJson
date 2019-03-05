@@ -9,24 +9,10 @@
 
 namespace ARDUINOJSON_NAMESPACE {
 
-template <typename TFloat>
-inline TFloat parseFloat(const char* s) {
-  typedef typename FloatTraits<TFloat>::mantissa_type TUInt;
-
-  ParsedNumber<Float, TUInt> num = parseNumber<Float, TUInt>(s);
-
-  switch (num.type()) {
-    case VALUE_IS_NEGATIVE_INTEGER:
-      return convertNegativeInteger<TFloat>(num.uintValue);
-
-    case VALUE_IS_POSITIVE_INTEGER:
-      return convertPositiveInteger<TFloat>(num.uintValue);
-
-    case VALUE_IS_FLOAT:
-      return TFloat(num.floatValue);
-
-    default:
-      return 0;
-  }
+template <typename T>
+inline T parseFloat(const char* s) {
+  // try to reuse the same parameters as JsonDeserializer
+  typedef typename choose_largest<Float, T>::type TFloat;
+  return parseNumber<TFloat, UInt>(s).template as<T>();
 }
 }  // namespace ARDUINOJSON_NAMESPACE

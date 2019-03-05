@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <float.h>
 #include "../Polyfills/type_traits.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {
@@ -13,15 +14,45 @@ template <typename T, typename Enable = void>
 struct numeric_limits;
 
 template <typename T>
-struct numeric_limits<T, typename enable_if<is_unsigned<T>::value>::type> {
-  const static T min_value = 0;
-  const static T max_value = T(~min_value);
+struct numeric_limits<T, typename enable_if<is_integral<T>::value &&
+                                            is_unsigned<T>::value>::type> {
+  static T lowest() {
+    return 0;
+  }
+  static T largest() {
+    return T(-1);
+  }
 };
 
 template <typename T>
-struct numeric_limits<T, typename enable_if<is_signed<T>::value>::type> {
-  const static T min_value = T(T(1) << (sizeof(T) * 8 - 1));
-  const static T max_value = ~min_value;
+struct numeric_limits<
+    T, typename enable_if<is_integral<T>::value && is_signed<T>::value>::type> {
+  static T lowest() {
+    return T(T(1) << (sizeof(T) * 8 - 1));
+  }
+  static T largest() {
+    return T(~lowest());
+  }
+};
+
+template <>
+struct numeric_limits<float, void> {
+  static float lowest() {
+    return -FLT_MAX;
+  }
+  static float largest() {
+    return FLT_MAX;
+  }
+};
+
+template <>
+struct numeric_limits<double, void> {
+  static double lowest() {
+    return -DBL_MAX;
+  }
+  static double largest() {
+    return DBL_MAX;
+  }
 };
 
 }  // namespace ARDUINOJSON_NAMESPACE
