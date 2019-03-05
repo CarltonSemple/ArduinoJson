@@ -4,6 +4,16 @@
 
 #pragma once
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
+#elif defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#endif
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
 #include "../Polyfills/limits.hpp"
 #include "Float.hpp"
 #include "FloatTraits.hpp"
@@ -96,3 +106,11 @@ typename enable_if<!is_floating_point<TOut>::value, TOut>::type convertFloat(
              : 0;
 }
 }  // namespace ARDUINOJSON_NAMESPACE
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
+#endif
