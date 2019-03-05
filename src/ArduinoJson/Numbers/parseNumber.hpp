@@ -61,9 +61,6 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char *s) {
 
   ARDUINOJSON_ASSERT(s != 0);
 
-  if (*s == 't') return long(1);  // true
-  if (*s == 'f') return long(0);  // false
-
   bool is_negative = false;
   switch (*s) {
     case '-':

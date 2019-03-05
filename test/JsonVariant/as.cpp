@@ -94,7 +94,6 @@ TEST_CASE("JsonVariant::as()") {
   SECTION("set(\"42\")") {
     variant.set("42");
 
-    REQUIRE(variant.as<bool>());
     REQUIRE(variant.as<long>() == 42L);
   }
 
@@ -111,7 +110,6 @@ TEST_CASE("JsonVariant::as()") {
   SECTION("set(std::string(\"4.2\"))") {
     variant.set(std::string("4.2"));
 
-    REQUIRE(variant.as<bool>() == true);
     REQUIRE(variant.as<long>() == 4L);
     REQUIRE(variant.as<double>() == 4.2);
     REQUIRE(variant.as<char*>() == std::string("4.2"));
@@ -121,8 +119,8 @@ TEST_CASE("JsonVariant::as()") {
   SECTION("set(\"true\")") {
     variant.set("true");
 
-    REQUIRE(variant.as<bool>());
-    REQUIRE(variant.as<long>() == 1L);
+    REQUIRE(variant.as<bool>() == true);
+    REQUIRE(variant.as<int>() == 0);
   }
 
   SECTION("to<JsonObject>()") {

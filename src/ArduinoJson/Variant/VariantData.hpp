@@ -64,9 +64,7 @@ class VariantData {
 
   const char *asString() const;
 
-  bool asBoolean() const {
-    return asIntegral<int>() != 0;
-  }
+  bool asBoolean() const;
 
   CollectionData *asArray() {
     return isArray() ? &_content.asCollection : 0;

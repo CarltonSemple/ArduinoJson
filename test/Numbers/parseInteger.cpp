@@ -23,8 +23,6 @@ TEST_CASE("parseInteger<int8_t>()") {
   check<int8_t>("x42", 0);
   check<int8_t>("128", 0);   // overflow
   check<int8_t>("-129", 0);  // overflow
-  check<int8_t>("true", 1);
-  check<int8_t>("false", 0);
 }
 
 TEST_CASE("parseInteger<int16_t>()") {
@@ -35,8 +33,6 @@ TEST_CASE("parseInteger<int16_t>()") {
   check<int16_t>("x42", 0);
   check<int16_t>("-32769", 0);  // overflow
   check<int16_t>("32768", 0);   // overflow
-  check<int16_t>("true", 1);
-  check<int16_t>("false", 0);
 }
 
 TEST_CASE("parseInteger<int32_t>()") {
@@ -47,8 +43,6 @@ TEST_CASE("parseInteger<int32_t>()") {
   check<int32_t>("x42", 0);
   check<int32_t>("-2147483649", 0);  // overflow
   check<int32_t>("2147483648", 0);   // overflow
-  check<int32_t>("true", 1);
-  check<int32_t>("false", 0);
 }
 
 TEST_CASE("parseInteger<uint8_t>()") {
@@ -59,8 +53,6 @@ TEST_CASE("parseInteger<uint8_t>()") {
   check<uint8_t>("x42", 0);
   check<uint8_t>("-1", 0);
   check<uint8_t>("256", 0);
-  check<uint8_t>("true", 1);
-  check<uint8_t>("false", 0);
 }
 
 TEST_CASE("parseInteger<uint16_t>()") {
@@ -72,6 +64,4 @@ TEST_CASE("parseInteger<uint16_t>()") {
   check<uint16_t>("x42", 0);
   check<uint16_t>("-1", 0);
   check<uint16_t>("65536", 0);
-  check<uint16_t>("true", 1);
-  check<uint16_t>("false", 0);
 }
