@@ -16,11 +16,13 @@ static void check(const char* input, U expected) {
   REQUIRE(doc.as<T>() == expected);
 }
 
+#if ARDUINOJSON_USE_LONG_LONG == 0
 static void checkNotSupported(const char* input) {
   DynamicJsonDocument doc(4096);
   DeserializationError error = deserializeMsgPack(doc, input);
   REQUIRE(error == DeserializationError::NotSupported);
 }
+#endif
 
 static void checkIsNull(const char* input) {
   DynamicJsonDocument doc(4096);
@@ -101,11 +103,11 @@ TEST_CASE("deserialize MsgPack value") {
 
   SECTION("int 64") {
 #if ARDUINOJSON_USE_LONG_LONG
-    check<uint64_t>("\xD3\x00\x00\x00\x00\x00\x00\x00\x00", 0U);
-    check<uint64_t>("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF",
-                    0xFFFFFFFFFFFFFFFFU);
-    check<uint64_t>("\xD3\x12\x34\x56\x78\x9A\xBC\xDE\xF0",
-                    0x123456789ABCDEF0U);
+    check<int64_t>("\xD3\x00\x00\x00\x00\x00\x00\x00\x00", int64_t(0U));
+    check<int64_t>("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF",
+                   int64_t(0xFFFFFFFFFFFFFFFFU));
+    check<int64_t>("\xD3\x12\x34\x56\x78\x9A\xBC\xDE\xF0",
+                   int64_t(0x123456789ABCDEF0));
 #else
     checkNotSupported("\xD3\x00\x00\x00\x00\x00\x00\x00\x00");
     checkNotSupported("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF");

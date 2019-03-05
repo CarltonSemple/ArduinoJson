@@ -6,6 +6,11 @@
 
 #include "../Polyfills/type_traits.hpp"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4310)
+#endif
+
 namespace ARDUINOJSON_NAMESPACE {
 
 // Differs from standard because we can't use the symbols "min" and "max"
@@ -35,3 +40,7 @@ struct numeric_limits<
 };
 
 }  // namespace ARDUINOJSON_NAMESPACE
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

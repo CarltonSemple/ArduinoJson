@@ -38,10 +38,19 @@ canStoreNegativeInteger(TIn) {
 }
 
 template <typename TOut, typename TIn>
-typename enable_if<is_integral<TOut>::value && is_signed<TOut>::value,
+typename enable_if<is_integral<TOut>::value && is_signed<TOut>::value &&
+                       sizeof(TOut) <= sizeof(TIn),
                    bool>::type
 canStoreNegativeInteger(TIn value) {
-  return value <= TIn(-numeric_limits<TOut>::lowest());
+  return value <= TIn(numeric_limits<TOut>::highest()) + 1;
+}
+
+template <typename TOut, typename TIn>
+typename enable_if<is_integral<TOut>::value && is_signed<TOut>::value &&
+                       sizeof(TIn) < sizeof(TOut),
+                   bool>::type
+canStoreNegativeInteger(TIn value) {
+  return true;
 }
 
 template <typename TOut, typename TIn>
