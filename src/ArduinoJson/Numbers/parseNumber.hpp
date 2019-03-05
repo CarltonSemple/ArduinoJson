@@ -52,7 +52,7 @@ template <typename A, typename B>
 struct choose_largest : conditional<(sizeof(A) > sizeof(B)), A, B> {};
 
 template <typename TFloat, typename TUInt>
-inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
+inline ParsedNumber<TFloat, TUInt> parseNumber(const char *s) {
   typedef FloatTraits<TFloat> traits;
   typedef typename choose_largest<typename traits::mantissa_type, TUInt>::type
       mantissa_t;
@@ -111,7 +111,7 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
     s++;
     while (isdigit(*s)) {
       if (mantissa < traits::mantissa_max / 10) {
-        mantissa = mantissa * 10 + (*s - '0');
+        mantissa = mantissa * 10 + uint8_t(*s - '0');
         exponent_offset--;
       }
       s++;
