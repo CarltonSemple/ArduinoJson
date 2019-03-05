@@ -33,10 +33,6 @@ void checkInf(const char* input, bool negative) {
 }
 
 TEST_CASE("parseFloat<float>()") {
-  SECTION("Null") {
-    check<float>(NULL, 0);
-  }
-
   SECTION("Float_Short_NoExponent") {
     check<float>("3.14", 3.14f);
     check<float>("-3.14", -3.14f);
@@ -106,10 +102,6 @@ TEST_CASE("parseFloat<float>()") {
 }
 
 TEST_CASE("parseFloat<double>()") {
-  SECTION("Null") {
-    check<double>(NULL, 0);
-  }
-
   SECTION("Short_NoExponent") {
     check<double>("3.14", 3.14);
     check<double>("-3.14", -3.14);

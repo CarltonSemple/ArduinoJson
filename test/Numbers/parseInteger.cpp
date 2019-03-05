@@ -23,7 +23,6 @@ TEST_CASE("parseInteger<int8_t>()") {
   check<int8_t>("x42", 0);
   check<int8_t>("128", 0);   // overflow
   check<int8_t>("-129", 0);  // overflow
-  check<int8_t>(NULL, 0);
   check<int8_t>("true", 1);
   check<int8_t>("false", 0);
 }
@@ -36,7 +35,6 @@ TEST_CASE("parseInteger<int16_t>()") {
   check<int16_t>("x42", 0);
   check<int16_t>("-32769", 0);  // overflow
   check<int16_t>("32768", 0);   // overflow
-  check<int16_t>(NULL, 0);
   check<int16_t>("true", 1);
   check<int16_t>("false", 0);
 }

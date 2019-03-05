@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "../Polyfills/assert.hpp"
 #include "../Polyfills/ctype.hpp"
 #include "../Polyfills/math.hpp"
 #include "../Polyfills/type_traits.hpp"
@@ -58,7 +59,8 @@ inline ParsedNumber<TFloat, TUInt> parseNumber(const char* s) {
   typedef typename traits::exponent_type exponent_t;
   typedef ParsedNumber<TFloat, TUInt> return_type;
 
-  if (!s) return return_type();
+  ARDUINOJSON_ASSERT(s != 0);
+
   if (*s == 't') return long(1);  // true
   if (*s == 'f') return long(0);  // false
 
