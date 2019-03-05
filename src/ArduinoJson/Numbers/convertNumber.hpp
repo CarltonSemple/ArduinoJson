@@ -15,7 +15,7 @@ template <typename TOut, typename TIn>
 typename enable_if<is_integral<TOut>::value && sizeof(TOut) <= sizeof(TIn),
                    bool>::type
 canStorePositiveInteger(TIn value) {
-  return value <= TIn(numeric_limits<TOut>::largest());
+  return value <= TIn(numeric_limits<TOut>::highest());
 }
 
 template <typename TOut, typename TIn>
@@ -65,8 +65,9 @@ template <typename TOut, typename TIn>
 typename enable_if<is_floating_point<TOut>::value && sizeof(TOut) < sizeof(TIn),
                    TOut>::type
 convertFloat(TIn value) {
-  if (value < numeric_limits<TOut>::lowest()) return -FloatTraits<TOut>::inf();
-  if (value > numeric_limits<TOut>::largest()) return FloatTraits<TOut>::inf();
+  typedef FloatTraits<TOut> traits;
+  if (value < traits::lowest()) return -traits::inf();
+  if (value > traits::highest()) return traits::inf();
   return TOut(value);
 }
 
@@ -81,7 +82,7 @@ template <typename TOut, typename TIn>
 typename enable_if<!is_floating_point<TOut>::value, TOut>::type convertFloat(
     TIn value) {
   return value >= numeric_limits<TOut>::lowest() &&
-                 value <= numeric_limits<TOut>::largest()
+                 value <= numeric_limits<TOut>::highest()
              ? TOut(value)
              : 0;
 }

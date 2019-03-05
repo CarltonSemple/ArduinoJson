@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <float.h>
 #include "../Polyfills/type_traits.hpp"
 
 namespace ARDUINOJSON_NAMESPACE {
@@ -19,7 +18,7 @@ struct numeric_limits<T, typename enable_if<is_integral<T>::value &&
   static T lowest() {
     return 0;
   }
-  static T largest() {
+  static T highest() {
     return T(-1);
   }
 };
@@ -30,28 +29,8 @@ struct numeric_limits<
   static T lowest() {
     return T(T(1) << (sizeof(T) * 8 - 1));
   }
-  static T largest() {
+  static T highest() {
     return T(~lowest());
-  }
-};
-
-template <>
-struct numeric_limits<float, void> {
-  static float lowest() {
-    return -FLT_MAX;
-  }
-  static float largest() {
-    return FLT_MAX;
-  }
-};
-
-template <>
-struct numeric_limits<double, void> {
-  static double lowest() {
-    return -DBL_MAX;
-  }
-  static double largest() {
-    return DBL_MAX;
   }
 };
 

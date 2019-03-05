@@ -95,6 +95,14 @@ struct FloatTraits<T, 8 /*64bits*/> {
     return forge(0x7ff00000, 0x00000000);
   }
 
+  static T highest() {
+    return forge(0x7FEFFFFF, 0xFFFFFFFF);
+  }
+
+  static T lowest() {
+    return forge(0xFFEFFFFF, 0xFFFFFFFF);
+  }
+
   // constructs a double floating point values from its binary representation
   // we use this function to workaround platforms with single precision literals
   // (for example, when -fsingle-precision-constant is passed to GCC)
@@ -155,6 +163,14 @@ struct FloatTraits<T, 4 /*32bits*/> {
 
   static T inf() {
     return forge(0x7f800000);
+  }
+
+  static T highest() {
+    return forge(0x7f7fffff);
+  }
+
+  static T lowest() {
+    return forge(0xFf7fffff);
   }
 };
 }  // namespace ARDUINOJSON_NAMESPACE
