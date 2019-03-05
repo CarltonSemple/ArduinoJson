@@ -6,6 +6,10 @@
 #include <stdint.h>
 #include <catch.hpp>
 
+namespace my {
+using ARDUINOJSON_NAMESPACE::isinf;
+}  // namespace my
+
 static const char* null = 0;
 
 TEST_CASE("JsonVariant::as()") {
@@ -121,6 +125,29 @@ TEST_CASE("JsonVariant::as()") {
 
     REQUIRE(variant.as<bool>() == true);
     REQUIRE(variant.as<int>() == 0);
+  }
+
+  SECTION("set(-1e300)") {
+    variant.set(-1e300);
+
+    REQUIRE(variant.as<double>() == -1e300);
+    REQUIRE(variant.as<float>() < 0);
+    REQUIRE(my::isinf(variant.as<float>()));
+  }
+
+  SECTION("set(1e300)") {
+    variant.set(1e300);
+
+    REQUIRE(variant.as<double>() == 1e300);
+    REQUIRE(variant.as<float>() > 0);
+    REQUIRE(my::isinf(variant.as<float>()));
+  }
+
+  SECTION("set(1e300)") {
+    variant.set(1e-300);
+
+    REQUIRE(variant.as<double>() == 1e-300);
+    REQUIRE(variant.as<float>() == 0);
   }
 
   SECTION("to<JsonObject>()") {

@@ -81,19 +81,8 @@ TOut convertNegativeInteger(TIn value) {
 }
 
 template <typename TOut, typename TIn>
-typename enable_if<is_floating_point<TOut>::value && sizeof(TOut) < sizeof(TIn),
-                   TOut>::type
-convertFloat(TIn value) {
-  typedef FloatTraits<TOut> traits;
-  if (value < traits::lowest()) return -traits::inf();
-  if (value > traits::highest()) return traits::inf();
-  return TOut(value);
-}
-
-template <typename TOut, typename TIn>
-typename enable_if<
-    is_floating_point<TOut>::value && sizeof(TIn) <= sizeof(TOut), TOut>::type
-convertFloat(TIn value) {
+typename enable_if<is_floating_point<TOut>::value, TOut>::type convertFloat(
+    TIn value) {
   return TOut(value);
 }
 

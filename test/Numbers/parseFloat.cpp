@@ -93,6 +93,9 @@ TEST_CASE("parseFloat<float>()") {
     checkInf<float>("inf", false);
     checkInf<float>("+inf", false);
     checkInf<float>("-inf", true);
+
+    checkInf<float>("1e300", false);
+    checkInf<float>("-1e300", true);
   }
 }
 
