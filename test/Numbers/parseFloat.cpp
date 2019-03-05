@@ -2,6 +2,8 @@
 // Copyright Benoit Blanchon 2014-2019
 // MIT License
 
+#define ARDUINOJSON_USE_DOUBLE 0
+
 #include <ArduinoJson/Numbers/parseFloat.hpp>
 #include <catch.hpp>
 
